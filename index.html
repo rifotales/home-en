@@ -1,1 +1,427 @@
-dd
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rifotales Studio</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Fonts from Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+<!-- Font Awesome for social media icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+--bg-color-start: #0e0d16;
+--bg-color-end: #1b203a;
+--text-color: #f1f1f1;
+--link-hover-color: #8b96a8;
+--gradient-start: #3b82f6;
+--gradient-end: #1e3a8a;
+}
+
+body {
+font-family: 'Inter', sans-serif;
+color: var(--text-color);
+background-color: var(--bg-color-start);
+transition: background-color 0.5s ease;
+overflow-x: hidden;
+background: radial-gradient(circle at center, var(--bg-color-end) 0%, var(--bg-color-start) 100%);
+}
+
+h1 {
+font-family: 'Playfair Display', serif;
+}
+
+h2, h4 {
+font-family: 'Playfair Display', serif;
+}
+.font-dancing-script {
+    font-family: 'Dancing Script', cursive;
+    font-weight: 700;
+}
+/* Dynamic background canvas */
+#bg-canvas {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: -1;
+filter: blur(2px) brightness(0.8);
+opacity: 0.9;
+transition: opacity 0.5s ease;
+}
+
+/* Hero section style */
+.hero {
+height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
+position: relative;
+}
+
+.hero-content {
+z-index: 10;
+}
+
+.hero h1 {
+background: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+from { text-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+to { text-shadow: 0 0 20px rgba(30, 58, 138, 0.7); }
+}
+
+/* Scroll-fade-in animation */
+.fade-in {
+opacity: 0;
+transform: translateY(30px) scale(0.95);
+transition: opacity 1.2s cubic-bezier(0.25, 0.8, 0.25, 1), transform 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.fade-in.is-visible {
+opacity: 1;
+transform: translateY(0) scale(1);
+}
+
+/* Cinematic separator line */
+.cinematic-line {
+width: 0;
+height: 3px;
+background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+margin: 1.5rem auto;
+transition: width 0.8s ease;
+}
+
+.cinematic-line.is-visible {
+width: 150px;
+}
+
+.video-card {
+background-color: rgba(36, 41, 60, 0.5);
+backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.15);
+transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+position: relative;
+overflow: hidden;
+}
+
+.video-card:hover {
+transform: translateY(-12px) scale(1.02);
+box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+border-color: var(--gradient-start);
+}
+
+.video-card iframe {
+width: 100%;
+aspect-ratio: 16 / 9;
+transition: transform 0.4s ease;
+}
+
+.video-card:hover iframe {
+transform: scale(1.05);
+}
+
+/* Link style */
+.social-link {
+transition: color 0.3s ease, transform 0.3s ease;
+position: relative;
+}
+
+.social-link:hover {
+color: var(--link-hover-color);
+transform: scale(1.1);
+}
+
+.social-link::after {
+content: '';
+position: absolute;
+bottom: -4px;
+left: 0;
+width: 100%;
+height: 2px;
+background: var(--gradient-start);
+transform: scaleX(0);
+transition: transform 0.3s ease;
+}
+
+.social-link:hover::after {
+transform: scaleX(1);
+}
+
+/* Floating menu style */
+.floating-menu {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 50;
+  transform: translateX(100px);
+  opacity: 0;
+  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background-color: rgba(27, 32, 58, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.floating-menu.is-visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+.menu-button {
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  font-family: 'Dancing Script', cursive;
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.menu-button:hover {
+  transform: translateY(-2px) scale(1.05);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+</style>
+</head>
+<body class="bg-gray-900">
+<!-- Dynamic background canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- Floating menu that appears on scroll -->
+<div id="floating-menu" class="floating-menu flex flex-col space-y-2 p-2 rounded-lg">
+  <a href="#hero" class="menu-button px-4 py-2 rounded-md text-sm font-semibold text-white">Studio</a>
+  <a href="https://rifotales.github.io/sound/" target="_blank" class="menu-button px-4 py-2 rounded-md text-sm font-semibold text-white">Sound</a>
+  <a href="https://rifotales.github.io/voice/" target="_blank" class="menu-button px-4 py-2 rounded-md text-sm font-semibold text-white">Voice</a>
+</div>
+
+<!-- Hero Section -->
+<header id="hero" class="hero">
+<div class="hero-content">
+<h1 class="text-7xl md:text-9xl font-bold uppercase tracking-widest fade-in">Rifotales</h1>
+<h2 class="text-2xl md:text-3xl mt-6 font-light italic text-gray-300 fade-in delay-200 font-dancing-script">Create. Explore. Live.</h2>
+<p class="text-lg md:text-2xl mt-4 text-gray-400 fade-in delay-300 font-dancing-script">Dive into worlds where every story comes to life.</p>
+</div>
+</header>
+
+<main class="container mx-auto px-4 md:px-8 max-w-full lg:max-w-7xl py-16">
+
+<!-- About Us Section -->
+<section id="about" class="mt-20 fade-in">
+<h3 class="text-3xl md:text-5xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-600 font-dancing-script">Foreword</h3>
+<div class="cinematic-line"></div>
+<p class="mt-8 text-center text-lg md:text-xl leading-relaxed text-gray-300 max-w-4xl mx-auto">
+Our motto, "Create, Explore, and Live," is the heart of the studio. We create worlds that captivate, inspire, and allow viewers to experience the story with us. Each story is born within Rifotales, and through experimentation and study of how to tell it, it receives its life, its world, and its screen adaptation in various or specific forms. Welcome!
+</p>
+</section>
+
+<!-- Our Works Section -->
+<section id="works" class="mt-20 fade-in">
+<h3 class="text-3xl md:text-5xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-600 font-dancing-script">Our Works</h3>
+<div class="cinematic-line"></div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mt-12">
+<!-- Short Film 1: Remember -->
+<div class="video-card rounded-xl p-6 fade-in">
+<iframe src="https://www.youtube.com/embed/ic3BvK9vEdE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="rounded-xl"></iframe>
+<h4 class="text-xl md:text-3xl mt-4 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-indigo-500">Remember</h4>
+<p class="text-sm md:text-base text-gray-400 mt-2 italic">People lose their loved ones... and he is the only one who can keep the last words addressed to those they loved.</p>
+</div>
+<!-- Short Film 2: Claricore's Face -->
+<div class="video-card rounded-xl p-6 fade-in delay-100">
+<iframe src="https://www.youtube.com/embed/vzxL0Y-JgS8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="rounded-xl"></iframe>
+<h4 class="text-xl md:text-3xl mt-4 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-indigo-500">Claricore's Face</h4>
+<p class="text-sm md:text-base text-gray-400 mt-2 italic">The story tells of a boy who did not expect to see him in the window...</p>
+</div>
+<!-- Short Film 3: Ice Watch -->
+<div class="video-card rounded-xl p-6 fade-in delay-200">
+<iframe src="https://www.youtube.com/embed/NuexAepUN1s" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="rounded-xl"></iframe>
+<h4 class="text-xl md:text-3xl mt-4 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-indigo-500">Ice Watch</h4>
+<p class="text-sm md:text-base text-gray-400 mt-2 italic">A world during a nuclear winter</p>
+</div>
+<!-- Short Film 4: Recording Dd57 - The Observer -->
+<div class="video-card rounded-xl p-6 fade-in delay-300">
+<iframe src="https://www.youtube.com/embed/3EKlHyex890" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="rounded-xl"></iframe>
+<h4 class="text-xl md:text-3xl mt-4 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-indigo-500">Recording Dd57 - The Observer</h4>
+<p class="text-sm md:text-base text-gray-400 mt-2 italic">A short film about observation and secrets.</p>
+</div>
+<!-- Short Film 5: Diabol - Father's Secret -->
+<div class="video-card rounded-xl p-6 fade-in delay-400">
+<iframe src="https://www.youtube.com/embed/EaopjuhBP0Q" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="rounded-xl"></iframe>
+<h4 class="text-xl md:text-3xl mt-4 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-indigo-500">Diabol - Father's Secret</h4>
+<p class="text-sm md:text-base text-gray-400 mt-2 italic">A plot full of mysteries and family secrets.</p>
+</div>
+</div>
+</section>
+
+<!-- Contact Us Section -->
+<section id="contact" class="mt-20 fade-in text-center">
+<h3 class="text-3xl md:text-5xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-600 font-dancing-script">Contact Us</h3>
+<div class="cinematic-line"></div>
+<div class="flex flex-wrap justify-center gap-x-10 gap-y-6 mt-8 text-2xl">
+<a href="https://www.youtube.com/@rifotales" target="_blank" class="social-link"><i class="fab fa-youtube"></i></a>
+<a href="https://t.me/rifotales" target="_blank" class="social-link"><i class="fab fa-telegram-plane"></i></a>
+<a href="https://www.facebook.com/people/Rifotales/61565675293141/" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
+<a href="https://www.instagram.com/rifotales/" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
+<a href="https://x.com/riforka" target="_blank" class="social-link"><i class="fab fa-x-twitter"></i></a>
+<a href="mailto:riforpik@gmail.com" class="social-link"><i class="fas fa-envelope"></i></a>
+</div>
+</section>
+</main>
+
+<script>
+// Setup Intersection Observer for fade-in animation
+const fadeInElements = document.querySelectorAll('.fade-in');
+const lineElements = document.querySelectorAll('.cinematic-line');
+
+const observerOptions = {
+root: null,
+rootMargin: '0px',
+threshold: 0.3
+};
+
+const observer = new IntersectionObserver((entries, observer) => {
+entries.forEach(entry => {
+if (entry.isIntersecting) {
+entry.target.classList.add('is-visible');
+observer.unobserve(entry.target);
+}
+});
+}, observerOptions);
+
+fadeInElements.forEach(el => observer.observe(el));
+lineElements.forEach(el => observer.observe(el));
+
+// --- Dynamic background canvas animation ---
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let width, height;
+let particles = [];
+let whales = [
+{ x: -250, y: 0, speed: 0.25, size: 250, rotation: 0, rotationSpeed: 0.0015, yOffset: 0, color: 'rgba(59, 130, 246, 0.2)' },
+{ x: -600, y: 0, speed: 0.18, size: 180, rotation: 0, rotationSpeed: -0.0008, yOffset: 150, color: 'rgba(30, 58, 138, 0.25)' },
+{ x: -400, y: 0, speed: 0.12, size: 120, rotation: 0, rotationSpeed: 0.001, yOffset: -100, color: 'rgba(79, 70, 229, 0.15)' }
+];
+let frameCount = 0;
+
+// Resize canvas on window resize
+function resizeCanvas() {
+width = canvas.width = window.innerWidth;
+height = canvas.height = window.innerHeight;
+createParticles();
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// Create particles for background animation
+function createParticles() {
+particles = [];
+for (let i = 0; i < 250; i++) {
+particles.push({
+x: Math.random() * width,
+y: Math.random() * height,
+radius: Math.random() * 3 + 1,
+vx: Math.random() * 0.3 - 0.15,
+vy: Math.random() * 0.3 - 0.15,
+alpha: Math.random() * 0.6 + 0.4,
+color: `rgba(${Math.random() * 50 + 200}, ${Math.random() * 50 + 200}, 255, ${Math.random() * 0.3 + 0.1})`
+});
+}
+}
+// Update animation state (whale and particle positions)
+function update() {
+frameCount++;
+// Move whales
+whales.forEach((whale, index) => {
+whale.x += whale.speed;
+whale.y = Math.sin(frameCount * 0.015 + index * Math.PI) * 20 + height / 2 + whale.yOffset;
+whale.rotation = Math.sin(frameCount * whale.rotationSpeed) * 0.08;
+
+if (whale.x > width + whale.size * 2) {
+whale.x = -whale.size * 2;
+}
+});
+// Update particles
+particles.forEach(p => {
+p.x += p.vx;
+p.y += p.vy;
+
+if (p.x < -10 || p.x > width + 10 || p.y < -10 || p.y > height + 10) {
+p.x = Math.random() * width;
+p.y = height + 10;
+}
+});
+}
+
+// Draw all elements on the canvas
+function draw() {
+ctx.clearRect(0, 0, width, height);
+
+// Draw a soft radial gradient for depth effect
+const gradient = ctx.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, Math.max(width, height));
+gradient.addColorStop(0, '#1b203a');
+gradient.addColorStop(0.5, '#121626');
+gradient.addColorStop(1, '#0a0e1a');
+ctx.fillStyle = gradient;
+ctx.fillRect(0, 0, width, height);
+// Draw floating particles
+particles.forEach(p => {
+ctx.fillStyle = p.color;
+ctx.beginPath();
+ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+ctx.fill();
+});
+
+// Draw whale silhouettes
+whales.forEach(whale => {
+ctx.save();
+ctx.translate(whale.x, whale.y);
+ctx.rotate(whale.rotation);
+// Set color and pulsating transparency
+const pulseAlpha = Math.sin(frameCount * 0.02) * 0.1 + 0.2;
+ctx.fillStyle = whale.color.replace(/, [\d\.]+\)$/, `, ${pulseAlpha})`);
+
+ctx.beginPath();
+ctx.moveTo(0, 0);
+ctx.quadraticCurveTo(whale.size * 0.5, -whale.size * 0.3, whale.size, 0);
+ctx.quadraticCurveTo(whale.size * 1.5, whale.size * 0.3, whale.size * 2, 0);
+ctx.lineTo(whale.size * 1.5, 0);
+ctx.closePath();
+ctx.fill();
+ctx.restore();
+});
+}
+// Main animation loop
+function animate() {
+update();
+draw();
+requestAnimationFrame(animate);
+}
+
+// Start animation loop on page load
+window.onload = function() {
+animate();
+};
+
+// --- JavaScript for floating menu show/hide ---
+const floatingMenu = document.getElementById('floating-menu');
+let lastScrollY = window.scrollY;
+const scrollThreshold = 100; // Threshold in pixels for menu to appear
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > scrollThreshold) {
+        floatingMenu.classList.add('is-visible');
+    } else {
+        floatingMenu.classList.remove('is-visible');
+    }
+});
+
+</script>
+</body>
+</html>
