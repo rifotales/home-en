@@ -421,5 +421,45 @@ window.addEventListener('scroll', () => {
     }
 });
 </script>
+
+<!-- === Добавленный скрипт: сохраняет ближайший к центру section как якорь при переходе на русскую версию === -->
+<script>
+(function(){
+  // Выбираем ссылку, ведущую на русскую версию; ищем по href содержащему '/home'
+  const ruLink = document.querySelector('.menu-button[href*="/home"]');
+  if(!ruLink) return;
+  const originalHref = ruLink.getAttribute('href') || '';
+
+  // Найти секцию, ближайшую к центру окна просмотра (по вертикали)
+  function getClosestSectionId(){
+    const sections = document.querySelectorAll('section[id]');
+    if(!sections.length) return null;
+    const viewportCenterY = window.scrollY + window.innerHeight / 2;
+    let best = null;
+    let bestDist = Infinity;
+    sections.forEach(s => {
+      const rect = s.getBoundingClientRect();
+      const top = rect.top + window.scrollY;
+      const dist = Math.abs(top - viewportCenterY);
+      if (dist < bestDist) { bestDist = dist; best = s; }
+    });
+    return best ? best.id : null;
+  }
+
+  // При клике — дописать якорь к href (не нарушая других параметров)
+  ruLink.addEventListener('click', function () {
+    try {
+      const id = getClosestSectionId();
+      if (id) {
+        const base = originalHref.split('#')[0];
+        ruLink.setAttribute('href', base + '#' + id);
+      }
+    } catch (err) {
+      // ничего не делаем — не мешаем навигации
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
